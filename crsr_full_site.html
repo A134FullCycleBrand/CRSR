@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CRSR — пиратский вайб, лицензированный доступ. Играй, холди, зарабатывай.</title>
+  <meta name="description" content="Держи CRSR и открывай CRSR Vault с проверенными лицензиями софта. Играй в раннер, конвертируй очки в токены, зови друзей — реф‑флот приносит процент. Live‑метрики, сезонные сжигания и DAO‑голосования." />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="icon" href="cherep.gif" type="image/gif" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CRSR — Pirate Meme Coin" />
+  <meta property="og:description" content="Vault с лицензиями, игра Pirate Runner, рефка L1/L2, ранги, DAO и метрики." />
+  <meta property="og:image" content="cherep.gif" />
+  <link rel="preload" as="image" href="groza.png" />
+  <link rel="preload" as="image" href="board.png" />
+  <link rel="preload" as="image" href="cherep.gif" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800;900&family=Russo+One&family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>*{font-feature-settings:"liga" 0}</style>
+  <script src="script.js?v=8" defer></script>
+  <link rel="preload" as="image" href="ogon.png" />
+</head>
+<body>
+  <div class="nav">
+    <div class="nav-left"><div class="glitch" data-text="CRSR">CRSR</div></div>
+    <nav class="nav-center">
+      <a href="#play">Игра</a>
+      <a href="#tokenomics">Токеномика</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right"><a class="btn cta" id="ctaTop">Купить CRSR</a></div>
+  </div>
+
+  <div class="wrap">
+    <header class="hero grid-2">
+      <div class="hero-copy">
+        <span class="badge">Alpha Season • Ранние получают больше</span>
+        <h1 class="per-letter"><span class="wave-text" data-text="CRSR — пиратский вайб. Лицензированный доступ.">CRSR — пиратский вайб. Лицензированный доступ.</span></h1>
+        <ul class="bullets">
+          <li>Держи CRSR — открывай Vault с лицензиями.</li>
+          <li>Играй → очки → CRSR.</li>
+          <li>Реферальный флот приносит %.</li>
+        </ul>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" id="primaryBuy">Купить CRSR</a>
+          <a class="btn btn-ghost" href="#play">Играть</a>
+          <a class="btn btn-ghost" href="#buy">Как купить</a>
+        </div>
+        <p class="note">Proof‑of‑License: каждую покупку лицензий подтверждаем on‑chain.</p>
+        </div>
+      <figure class="hero-art"><img src="cherep.gif" alt="Логотип CRSR — череп и кости" class="skull" loading="lazy" decoding="async" /></figure>
+    </header>
+
+    <!-- GAME -->
+    <section id="play" class="card pad col-12">
+      <h2>Pirate Runner</h2>
+      <div id="game-wrap" class="game-wrap">
+        <canvas id="gameCanvas" width="780" height="520"></canvas>
+        
+        <div class="hud">
+          <span class="pill">Очки: <b id="score">0</b></span>
+          <span class="pill">Рекорд: <b id="best">0</b></span>
+          <span class="pill">Скорость: <b id="speed">1.0x</b></span>
+          <span class="pill">Конверсия: <b id="rateLabel">100 очк. = 1 CRSR</b></span>
+          <button class="btn ghost" id="pauseBtn">Пауза</button>
+          <button class="btn danger" id="restartBtn">Заново</button>
+          <button class="btn" id="btnFullscreen">На весь экран</button>
+        </div>
+        <div id="stickBase" class="stick-base" aria-hidden="true">
+          <div id="stickHat" class="stick-hat"></div>
+        </div>
+        <p class="note">Управление: <span class="kbd">←</span><span class="kbd">→</span> перемещение, <span class="kbd">↑</span> ускорение, <span class="kbd">Space</span> — пауза. На мобильных — джойстик в левом нижнем углу.</p>
+      </div>
+      <div class="hud-cards">
+        <div class="hud-card"><span class="label">Очки</span><div class="value" id="hudScore">0</div></div>
+        <div class="hud-card"><span class="label">Рекорд</span><div class="value" id="hudBest">0</div></div>
+        <div class="hud-card"><span class="label">Скорость</span><div class="value" id="hudSpeed">1.0x</div></div>
+      </div>
+
+      <section id="seasonProgress" class="card pad" style="margin-top:16px">
+        <h3 class="wave-text">Прогресс сезона</h3>
+        <div class="season-progress" id="seasonProgressWrap">
+          <div class="season-rail">
+          <svg id="seasonWave" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="railGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"  stop-color="#4a4d52" stop-opacity=".38"></stop>
+                <stop offset="100%" stop-color="#2f3135" stop-opacity=".38"></stop>
+              </linearGradient>
+              <linearGradient id="railFlowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"  stop-color="#ffffff" stop-opacity=".12"></stop>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity=".04"></stop>
+              </linearGradient>
+              <!-- Неоновый градиент для заполненной части -->
+              <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop id="g0" offset="0%"  stop-color="#00E6FF"></stop>
+                <stop id="g1" offset="50%" stop-color="#FF2BD6"></stop>
+                <stop id="g2" offset="100%" stop-color="#00E6FF"></stop>
+              </linearGradient>
+              <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+                <feMerge>
+                  <feMergeNode in="blur"></feMergeNode>
+                  <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+              </filter>
+            </defs>
+            <!-- Рельса под заливкой -->
+            <path id="railPath" fill="none" stroke="url(#railGrad)" stroke-width="10" stroke-linecap="round"></path>
+            <!-- Flow под заливкой, чтобы даши не были видны в заполненной части -->
+            <path id="railFlow" fill="none" stroke="url(#railFlowGrad)" stroke-width="6" stroke-linecap="round" stroke-dasharray="40 140"></path>
+            <!-- Заполненная часть поверх всего -->
+            <path id="railFill" fill="none" stroke="url(#neonGrad)" stroke-width="10" stroke-linecap="butt" filter="url(#softGlow)"></path>
+          </svg>
+          <img id="railShip" class="season-ship" src="board.png" alt="" />
+          </div>
+          <div class="progress-meta">
+            <b>Очки:</b>
+            <span class="value" data-season-points>30000</span>
+            <b>Цель:</b>
+            <span class="value" data-season-goal>100000</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Highlights as cards (scannable content) -->
+      <section id="highlights" style="margin:16px 0 24px">
+        <div class="cards">
+          <div class="card">
+            <h3>Vault</h3>
+            <p>Лицензированный доступ к софту и контенту для холдеров CRSR. Подтверждаем Proof‑of‑License on‑chain.</p>
+          </div>
+          <div class="card">
+            <h3>Игра Pirate Runner</h3>
+            <p>Выживи дольше, собирай монеты и конвертируй очки в CRSR. Сезонные бусты и рейтинги.</p>
+          </div>
+          <div class="card">
+            <h3>Реферальный флот</h3>
+            <p>L1/L2 проценты, анти‑фарм и дневные лимиты. Расти командой и усиливай конверсию.</p>
+          </div>
+          <div class="card">
+            <h3>Ранги</h3>
+            <p>Cabin Boy → Davy Jones. Доступ к Vault, привилегии и повышенная рефка по мере роста ранга.</p>
+          </div>
+          <div class="card">
+            <h3>DAO</h3>
+            <p>Голосуем за закупки лицензий, экономику сезона, маркетинг и партнёрства. Публичная прозрачность.</p>
+          </div>
+          <div class="card">
+            <h3>Безопасность</h3>
+            <p>Анти‑бот, лимиты начислений, ручные ревью. Контракт верифицируем, ликвидность — планируемый лок.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Idea -->
+      <section class="card pad">
+        <h2>Идея</h2>
+        <p>CRSR — дерзкий проект хакерской команды интузеастов, борящихся против капитализма, его же методами. Забираем у корпораций и отдаем вам! Мы отбираем все возможные приложения, сервисы и технологии и сливаем лицензионный доступ холдерам. </p>
+      </section>
+
+      <!-- Value Blocks -->
+      <section class="card pad">
+        <h2>Value Blocks</h2>
+        <ul>
+          <li><b>Vault</b> — простая «копилка»/стейкинг для удержания и начисления бонусов.</li>
+          <li><b>Game</b> — Pirate Runner (очки → CRSR) + сезонные события.</li>
+          <li><b>Referral Fleet</b> — флот ссылок и команд с прогрессом и бустами.</li>
+          <li><b>Ranks</b> — ранги/ачивки с правами и наградами.</li>
+          <li><b>DAO</b> — голосование за праздничные рейды, пул маркетинга и листинги.</li>
+        </ul>
+      </section>
+
+      
+
+      
+
+      <!-- Ranks -->
+      <section class="card pad">
+        <h2>Ранги</h2>
+        <table class="table">
+          <tr><th>Ранг</th><th>Требование</th><th>Бонус</th></tr>
+          <tr><td>Cabin Boy</td><td>Игровые очки</td><td>Базовый флот</td></tr>
+          <tr><td>Quartermaster</td><td>Очки + рефералы</td><td>Повышенная конверсия</td></tr>
+          <tr><td>Captain</td><td>Высокая активность</td><td>Право предлагать рейды</td></tr>
+        </table>
+      </section>
+
+      <!-- Vault -->
+      <section class="card pad">
+        <h2>Vault</h2>
+        <p>Стейкинг/заморозка CRSR для доступа к бустам и сезонным наградам. Простая модель: lock → ранг → бонус.</p>
+      </section>
+
+      <!-- DAO Governance -->
+      <section class="card pad">
+        <h2>DAO Governance</h2>
+        <p>Голосуем за маркет‑кампании, пополнеия базы приложений, параметры сезона/клейма, пополнение Vault и экономику. Чем выше ранг — тем больше веса голоса.</p>
+      </section>
+
+      <!-- Metrics Dashboard (6 cards) -->
+      <section id="metrics" class="card pad">
+        <h2 class="center">Live Metrics</h2>
+        <p class="note" id="metrics-note">Пока демо‑значения. После подключения API — лайв‑данные (обновление раз в 60 сек).</p>
+        <div class="cards metrics">
+          <div class="metric-card" data-key="dau"><div class="metric-title">DAU</div><div class="metric-value mono" id="dau">—</div><div class="meter"><div class="meter-bar"></div></div></div>
+          <div class="metric-card" data-key="mau"><div class="metric-title">MAU</div><div class="metric-value mono" id="mau">—</div><div class="meter"><div class="meter-bar"></div></div></div>
+          <div class="metric-card" data-key="avg-session"><div class="metric-title">Avg Session</div><div class="metric-value mono" id="avgSession">—</div><div class="meter"><div class="meter-bar"></div></div></div>
+          <div class="metric-card" data-key="active-holders"><div class="metric-title">Active Holders</div><div class="metric-value mono" id="activeHolders">—</div><div class="meter"><div class="meter-bar"></div></div></div>
+          <div class="metric-card" data-key="ref"><div class="metric-title">Referral %</div><div class="metric-value mono" id="refPercent">—</div><div class="meter"><div class="meter-bar"></div></div></div>
+          <div class="metric-card" data-key="avg-claim"><div class="metric-title">Avg Claim/Day</div><div class="metric-value mono" id="avgClaim">—</div><div class="meter"><div class="meter-bar"></div></div></div>
+        </div>
+      </section>
+
+      <!-- Technical Outline -->
+      <section class="card pad">
+        <h2>Technical Outline</h2>
+        <ul>
+          <li>Web: ванильный HTML/CSS/JS, анимации без тяжёлых библиотек.</li>
+          <li>Игровая механика: canvas‑раннер, локальное начисление, простая синхронизация.</li>
+          <li>DAO/токеномика: базовый контракт, роли, трежери.</li>
+        </ul>
+      </section>
+
+      <!-- Risks & Protection -->
+      <section class="card pad">
+        <h2>Риски и защита</h2>
+        <ul>
+          <li>Анти‑бот и лимиты начислений.</li>
+          <li>Прозрачная экономика: часть доходов в трежери, сжигания по голосованию.</li>
+          <li>Комьюнити‑модерация и репутация флотов.</li>
+        </ul>
+      </section>
+
+      <!-- Default Config -->
+      <section class="card pad">
+        <h2>Default Config</h2>
+        <p>Пороговые значения и параметры игры/рефералок/рангов заданы так, чтобы онбординг был быстрым, а прогресс — стабильным.</p>
+      </section>
+
+      <!-- Investor Pitch -->
+      <section class="card pad">
+        <h2>Investor Pitch</h2>
+        <p>CRSR = доступ ко всем сервисам и приложениям интернеиа + игра + виральные рефералки + простая токен‑модель. Фокус на органике, сезонных событиях и DAO‑подтверждённых кампаниях.</p>
+      </section>
+      <div id="earnCard" class="card pad" style="margin-top:16px">
+        <h3 style="margin:0 0 8px">Играй и зарабатывай</h3>
+        <div class="earn-grid">
+          <div class="stat"><div class="note">Заработано очков за сессию</div><div class="mono" id="pointsSession">0</div></div>
+          <div class="stat"><div class="note">Доступно к клейму (CRSR)</div><div class="mono" id="claimable">0</div></div>
+          <div class="stat"><div class="note">Склеймлено всего (CRSR)</div><div class="mono" id="claimed">0</div></div>
+        </div>
+        <div class="field">
+          <button class="btn" id="connectWallet" type="button">Подключить кошелёк</button>
+          <span class="mono small" id="walletLabel">Не подключен</span>
+        </div>
+        <div class="field">
+          <button class="btn" id="claimBtn" type="button">Клеймить CRSR</button>
+          <span class="small" id="claimMsg"></span>
+        </div>
+        <p class="note">Каждые 1000 очков — «рейд» с бонусными поинтами в квест‑сезоне. В демо конвертация и клейм офчейн (локально) — для ончейн‑клейма подключим смарт‑контракт/бэкенд.</p>
+      </div>
+    </section>
+
+    <!-- 1) В чём идея -->
+    <section class="card pad" id="idea">
+      <h2>1) В чём идея</h2>
+      <p>CRSR — дерзкий мем-токен про «пиратский дух» интернета и свободу доступа к технологиям.
+      Главная ценность для держателей — <b>CRSR Vault (Licensed Booty): доступ к базе лицензированных приложений и медиаконтента</b>,
+      который проект покупает/курирует и подтверждает on-chain. Игровая механика, реферальный «флот» и система рангов создают
+      органический рост, а DAO — прозрачное развитие.</p>
+    </section>
+
+    <!-- 2) Главные блоки ценности -->
+    <section class="card pad" id="value">
+      <h2>2) Главные блоки ценности (TL;DR)</h2>
+      <ol>
+        <li><b>CRSR Vault (Licensed Booty)</b> — база софта и контента с открытыми или выкупленными лицензиями. Доступ только для холдеров; каждое добавление подтверждено <b>Proof-of-License</b> (хеш/ссылка в блокчейне).</li>
+        <li><b>Игра Pirate Runner</b> — очки за выживание и сбор монет конвертируются в CRSR (по параметрам DAO). Сезоны и NFT-флаги для топов.</li>
+        <li><b>Реферальный флот</b> — многоуровневые рефералки (L1/L2) с дневными лимитами и анти-фармом.</li>
+        <li><b>Ранги холдеров</b> — Cabin Boy → Davy Jones: уровни доступа к Vault, привилегии и повышенная рефка.</li>
+        <li><b>DAO</b> — голосования за наполнение Vault, параметры сезона/клейма, распределение казны (LP/burn/licensing), партнёрства.</li>
+      </ol>
+    </section>
+
+    
+
+    <!-- 4) Game blurb -->
+    <section class="card pad" id="game">
+      <h2>Dodge & Loot</h2>
+      <p>Уворачивайся от «BAN/DMCA/TAX/BOT», собирай монеты CRSR и комбо‑множители. Чем дольше живёшь — тем выше конверсия очков. Сезонные квесты добавляют бусты.</p>
+      <p class="note">Анти‑чит, анти‑бот, дневные капы — честно для всех.</p>
+    </section>
+
+    <!-- 5) Реферальный флот -->
+    <section class="card pad" id="refleet">
+      <h2>5) Реферальный флот</h2>
+      <div class="cols">
+        <div class="col-8">
+          <ul>
+            <li><b>L1:</b> 10% от фарма приглашённого (из Community/Points).</li>
+            <li><b>L2 (Captain+):</b> 2% от рефералов второго уровня.</li>
+            <li>Дневные лимиты, анти-фарм, «прогрев» аккаунтов, поведенческие сигналы.</li>
+          </ul>
+        </div>
+        <div class="col-4 center">
+          <img src="board.png" alt="CRSR Ship" class="skull" style="max-width:260px;" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+        </div>
+      </div>
+    </section>
+
+    <!-- 6) Ранги холдеров -->
+    <section class="card pad" id="ranks">
+      <h2>6) Ранги холдеров</h2>
+      <table class="table">
+        <tr><th>Ранг</th><th>Порог (пример)</th><th>Привилегии</th></tr>
+        <tr><td>Cabin Boy</td><td>≥ 1k CRSR</td><td>Доступ в Vault</td></tr>
+        <tr><td>Buccaneer</td><td>≥ 10k CRSR</td><td>Бонус-ивенты, приоритет доступа</td></tr>
+        <tr><td>Captain</td><td>≥ 50k CRSR</td><td>L2-рефералка, приоритет в квестах</td></tr>
+        <tr><td>Davy Jones</td><td>≥ 250k CRSR</td><td>Ранний доступ к дропам/релизам</td></tr>
+      </table>
+      <p class="note">Пороги и преимущества настраиваются DAO.</p>
+    </section>
+
+    <!-- 7) CRSR Vault -->
+    <section class="card pad" id="vault">
+      <h2>7) CRSR Vault — Licensed Booty</h2>
+      <ul>
+        <li>OSS / CC / Public Domain / демо / релизы с выкупленными правами.</li>
+        <li><b>Proof-of-License</b> для платных релизов: хеш договора/квитанции/IPFS-запись.</li>
+        <li>Доступ по рангу/стейку CRSR (роль-гейты).</li>
+        <li>Пополнение: голосования DAO + редакторская модерация.</li>
+      </ul>
+    </section>
+
+    <!-- 8) DAO -->
+    <section class="card pad" id="dao">
+      <h2>8) DAO (управление развитием)</h2>
+      <ul>
+        <li>Голосования: закупки лицензий, параметры сезона/клейма, распределение казны, партнёрства/листинги, маркетинг.</li>
+        <li>Механика: токен-вейт/делегирование; защита от доминирования китов (квазиквадратика — по обсуждению).</li>
+        <li>Прозрачность: публичные результаты, трекер казны, отчёты «Vault Purchases».</li>
+      </ul>
+    </section>
+
+    <!-- 9) Токеномика (оставить существующую секцию как есть) -->
+
+    <!-- 10) Метрики (уже добавлено ранее как #metrics) -->
+
+    <!-- 11) Roadmap -->
+    <section class="card pad" id="roadmap">
+      <h2>Roadmap</h2>
+      <div class="timeline">
+        <div class="milestone"><div class="dot"></div><div><strong>Alpha</strong> — DEX‑листинг, раннер, рефералка, базовый Vault.</div></div>
+        <div class="milestone"><div class="dot"></div><div><strong>Season 1</strong> — расширение Vault, ранги, рейтинги, коллаборации, buy&burn.</div></div>
+        <div class="milestone"><div class="dot"></div><div><strong>Growth</strong> — мобильная версия игры, партнёрские листинги, DAO‑квесты по наполнению Vault.</div></div>
+      </div>
+    </section>
+
+    <!-- 12) Технический контур -->
+    <section class="card pad" id="tech">
+      <h2>12) Технический контур (high-level)</h2>
+      <ul>
+        <li><b>Смарт-контракты (Base):</b> ERC-20 CRSR; клейм (меркл/EIP-712), параметры DAO, трезор/мультисиг.</li>
+        <li><b>Бэкенд:</b> анти-бот/анти-фарм, расчёт прав на клейм, API метрик/лидербордов.</li>
+        <li><b>Фронт:</b> лендинг + Canvas-игра, профиль (реф-ссылка, клейм, ранги), дашборд метрик, страница DAO.</li>
+        <li><b>Данные:</b> чувствительные расчёты на сервере + ончейн-валидация (подписи/меркл).</li>
+      </ul>
+    </section>
+
+    <!-- 13) Риски и защита -->
+    <section class="card pad" id="risks">
+      <h2>13) Риски и защита</h2>
+      <ul>
+        <li><b>Фарм/боты:</b> лимиты, поведенческие фильтры, «прогрев», выборочные ревью.</li>
+        <li><b>P2W-риски:</b> нет боевых преимуществ за токен/NFT; награды — косметика/престиж.</li>
+        <li><b>Юридика:</b> только легальный контент + публичные Proof-of-License; нет ссылок на нелегал.</li>
+        <li><b>Экономика:</b> гибкий курс очки→CRSR, потолки клейма, сезонная экономика, DAO-балансировка, контроль инфляции.</li>
+      </ul>
+    </section>
+
+    <!-- 14) Конфигурация -->
+    <section class="card pad" id="config">
+      <h2>14) Конфигурация (по умолчанию, правится DAO)</h2>
+<pre class="mono">Сеть: Base
+Курс игры: 100 очков = 1 CRSR
+Комбо: +1 каждые 20 сек без урона, максимум ×5
+Лимит клейма/сутки: X CRSR (DAO)
+Рефералка: L1=10%, L2=2% (с Captain+)
+Таблица рангов: 1k / 10k / 50k / 250k CRSR
+Токеномика: 45/20/12/10/8/5
+Налоги: 0–2% (DAO) → LP/маркет/казна</pre>
+    </section>
+
+    <!-- 15) Питч для инвестора -->
+    <section class="card pad" id="pitch">
+      <h2>15) Питч для инвестора (коротко)</h2>
+      <ul>
+        <li><b>Utility-центрик:</b> Vault — реальная польза для холдеров.</li>
+        <li><b>Виральность:</b> игра + L1/L2 + ранги → органический рост.</li>
+        <li><b>Контроль инфляции:</b> курс, лимиты, сезоны, DAO-баланс.</li>
+        <li><b>Прозрачность:</b> публичные метрики + on-chain Proof-of-License.</li>
+        <li><b>Скалируемость:</b> расширение Vault, партнёрства, сезоны и ивенты.</li>
+      </ul>
+    </section>
+    <section id="earn" class="card pad col-12">
+      <h2>Как зарабатывать CRSR</h2>
+      <ul>
+        <li><b>Играй в Pirate Runner</b> — очки автоматически конвертируются в токены по курсу <span class="mono" id="rateLabel2">100 очк. = 1 CRSR</span>. Ограничение по дневному лимиту для защиты экономики.</li>
+        <li><b>Квесты и рефералы</b> — выполняй задания, приглашай друзей по ссылке, получай бонусные CRSR.</li>
+        <li><b>Ивенты‑рейды</b> — сезонные события с увеличенными коэффициентами.</li>
+      </ul>
+      <div class="note">Примечание: этот лендинг реализует офчейн‑начисления для демонстрации. В продакшне «Клейм» будет вызывать контракт/бэкенд (поддержка Base).</div>
+    </section>
+
+    <section id="buy" class="card pad col-12">
+      <h2>Как купить</h2>
+      <ol>
+        <li>Установи кошелёк <b>Phantom</b> и пополни чуть-чуть <b>SOL</b> для комиссий.</li>
+        <li>Открой <b>Jupiter</b> (jup.ag) или <b>Raydium</b>.</li>
+        <li>Выбери пару <b>SOL ↔ CRSR</b> и вставь mint-адрес: <span class="mono" id="mintAddr"></span>.</li>
+        <li>Подтверди транзакцию в Phantom — готово.</li>
+      </ol>
+      <p class="note">Дисклеймер: DYOR. Не финсовет. Мы за мемы и свободу интернета.</p>
+    </section>
+
+    <section id="tokenomics" class="card pad col-12">
+      <div class="section-cards">
+        <div class="card pad">
+          <h2>Токеномика</h2>
+          <table class="table">
+            <tr><th>Категория</th><th>Доля</th><th>Комментарий</th></tr>
+            <tr><td>Ликвидность / DEX</td><td>45%</td><td>Чтобы корабль не тонул</td></tr>
+            <tr><td>Комьюнити / Поинты</td><td>20%</td><td>Розыгрыши сундуков</td></tr>
+            <tr><td>Маркетинг</td><td>12%</td><td>Флаги, баллады и мемы</td></tr>
+            <tr><td>Команда (вестинг)</td><td>10%</td><td>12–18 мес., без грабежа LP</td></tr>
+            <tr><td>Пиратская казна</td><td>8%</td><td>На абордажные ивенты</td></tr>
+            <tr><td>Резерв «Davy Jones»</td><td>5%</td><td>На случай шторма</td></tr>
+          </table>
+          <p class="note">Общее предложение: <span class="mono">1,000,000,000 CRSR</span>. Налоги 0–2% опционально → LP/маркет (по DAO).</p>
+        </div>
+        <div class="card pad">
+          <h2>Утилити</h2>
+          <ul>
+            <li>Доступ к «альфа» квестам и рейдам.</li>
+            <li>Голосования за коллабы, листинги, мем‑кампании.</li>
+            <li>Скидки на мерч и спец‑дропы.</li>
+            <li>Право поднимать чёрный флаг на конференциях.</li>
+          </ul>
+        </div>
+        <div class="card pad">
+          <h2>Безопасность</h2>
+          <ul>
+            <li>Контракт верифицируем на эксплорерах.</li>
+            <li>Ликвидность планируем залочить ≥ 12 мес.</li>
+            <li>Командный вестинг: 12–18 мес.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="investor" class="card pad col-12">
+      <h2>Инвестору</h2>
+      <ul>
+        <li><b>Драйверы спроса:</b> квесты/поинты, сезонные рейды, редкие NFT‑флаги, обратные выкупы по DAO.</li>
+        <li><b>Флайвил:</b> ивенты ⇒ ончейн‑активность ⇒ комиссии ⇒ поддержка LP ⇒ рост интереса ⇒ новые ивенты.</li>
+        <li><b>KPI 30 дней:</b> DAU 10k+, объём DEX $5–10M, LP $500k+, D30 25%+.</li>
+        <li><b>Анти‑бот:</b> дневной лимит клейма, поведенческие фильтры, ручная модерация эвентов.</li>
+      </ul>
+    </section>
+
+    <section id="roadmap" class="card pad col-12">
+      <h2>Roadmap</h2>
+      <ul>
+        <li><strong>Фаза 1:</strong> сайт, контракт, DEX‑листинг, первый рейд.</li>
+        <li><strong>Фаза 2:</strong> реф‑программа, квесты, поинты, лидерборды.</li>
+        <li><strong>Фаза 3:</strong> CEX‑листинги, кроссоверы, сезонные морские кампании.</li>
+      </ul>
+    </section>
+
+    <section id="faq" class="card pad col-12">
+      <h2>FAQ</h2>
+      <details><summary>Это «пиратка»?</summary><p>Это эстетика и мем‑стайл. В Vault — только легальный контент с подтверждаемыми лицензиями.</p></details>
+      <details><summary>Как получить доступ?</summary><p>Держи минимальный баланс N CRSR — и повышай ранг для большего доступа.</p></details>
+      <details><summary>Как начисляются токены?</summary><p>Очки → CRSR по курсу сезона. Лимиты и анти‑бот для честной экономики.</p></details>
+      <details><summary>Сеть и контракт?</summary><p>Solana. Mint‑адрес публикуем после аудита (или CRSR_MINT, если готов).</p></details>
+    </section>
+
+    <section id="community" class="cols">
+      <div class="card pad col-8">
+        <h2>Сообщество</h2>
+        <p>Заходи на корабль. Анонсы рейдов, розыгрыши и мем‑баллады.</p>
+        <div class="links">
+          <a class="pill" href="#" aria-label="Twitter">Twitter/X</a>
+          <a class="pill" href="#" aria-label="Telegram">Telegram</a>
+          <a class="pill" href="#" aria-label="Discord">Discord</a>
+          <a class="pill" href="#" aria-label="Dexscreener">Dexscreener</a>
+        </div>
+      </div>
+      <div class="card pad col-4">
+        <h2>Контакты</h2>
+        <p class="note">Партнёрства / Инфлы / Листинги</p>
+        <ul>
+          <li>Email: <a href="mailto:ahoy@crsr.wtf">ahoy@crsr.wtf</a></li>
+          <li>TG: <a href="#">@crsr_captain</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>© <span id="year"></span> CRSR — «Йо‑хо‑хо и криптором!»</div>
+      <div class="links">
+        <a href="#play">Играть</a>
+        <a href="#earn">Зарабатывать</a>
+        <a href="#buy">Как купить</a>
+        <a href="#tokenomics">Токеномика</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ---------- Config ----------
+    const CONFIG = {
+      POINTS_PER_TOKEN: 100,      // 100 очков = 1 CRSR
+      DAILY_TOKEN_CAP: 500,       // максимум токенов к клейму в сутки
+      SEASON_GOAL_POINTS: 1000,   // прогресс-бар сезона
+    };
+
+    // Year + labels
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.querySelectorAll('#rateLabel, #rateLabel2').forEach(n => n.textContent = `${CONFIG.POINTS_PER_TOKEN} очк. = 1 CRSR`);
+
+    // Buy buttons (placeholder link)
+    const go = () => window.open('https://app.blackhole.exchange/','_blank');
+    document.getElementById('ctaTop').onclick = go;
+    document.getElementById('primaryBuy')?.addEventListener('click', go);
+    // Copy contract (guard for missing elements)
+    const copyBtnEl = document.getElementById('copyBtn');
+    if (copyBtnEl) copyBtnEl.addEventListener('click', () => {
+      const c1 = document.getElementById('contract');
+      const c2 = document.getElementById('contract2');
+      const t = (c1?.textContent || '').trim();
+      if (t) navigator.clipboard.writeText(t);
+      if (c2) c2.textContent = t;
+    });
+    // Pirate counter fun
+    let pirates = 777;
+    setInterval(() => {
+  pirates += Math.floor(Math.random() * 5);
+  const el = document.getElementById('pirateCounter');
+  if (el) {
+    el.textContent = String(pirates).padStart(6, '0');
+  }
+}, 1500);
+
+    // Wallet demo removed — handled by isolated module in script.js
+
+    // ---------- Earn/Claim Offchain (legacy store for best only) ----------
+    const store = {
+      best: Number(localStorage.getItem('crsr_best')||0),
+      totalPoints: Number(localStorage.getItem('crsr_points')||0),
+      claimedTokens: Number(localStorage.getItem('crsr_claimed_tokens')||0),
+      day: localStorage.getItem('crsr_day') || new Date().toDateString(),
+      claimedToday: Number(localStorage.getItem('crsr_claimed_today')||0),
+    };
+    function saveStore(){
+      localStorage.setItem('crsr_best', store.best);
+      localStorage.setItem('crsr_points', store.totalPoints);
+      localStorage.setItem('crsr_claimed_tokens', store.claimedTokens);
+      localStorage.setItem('crsr_day', store.day);
+      localStorage.setItem('crsr_claimed_today', store.claimedToday);
+    }
+    function resetDailyIfNeeded(){
+      const d = new Date().toDateString();
+      if (store.day !== d) {
+        store.day = d; store.claimedToday = 0; saveStore();
+      }
+    }
+    resetDailyIfNeeded();
+    const ui = {
+      score: document.getElementById('score'),
+      best: document.getElementById('best'),
+      speed: document.getElementById('speed'),
+      hudScore: document.getElementById('hudScore'),
+      hudBest: document.getElementById('hudBest'),
+      hudSpeed: document.getElementById('hudSpeed'),
+      rate: document.getElementById('rateLabel'),
+      season: document.getElementById('seasonProgress'),
+      pointsSession: document.getElementById('pointsSession'),
+      claimable: document.getElementById('claimable'),
+      claimed: document.getElementById('claimed'),
+      claimBtn: document.getElementById('claimBtn'),
+      claimMsg: document.getElementById('claimMsg'),
+      pauseBtn: document.getElementById('pauseBtn'),
+      restartBtn: document.getElementById('restartBtn'),
+    };
+    ui.best.textContent = store.best;
+    if (ui.hudBest) ui.hudBest.textContent = store.best;
+    ui.claimed.textContent = store.claimedTokens;
+    let _uiUpdateAccumulator = 0; // throttle UI DOM writes to reduce layout thrash
+
+    // Legacy claim handlers removed — handled by isolated module in script.js
+    // Backward-compat: noop to avoid runtime errors from old call sites
+    function updateClaimable(){ /* noop: demo earn handled in script.js module */ }
+
+    // ---------- Canvas Mini-Game: Pirate Runner ----------
+    const canvas = document.getElementById('gameCanvas');
+    const gameWrap = document.getElementById('game-wrap');
+    const ctx = canvas.getContext('2d');
+
+    // (ocean background under canvas handled by CSS/layout only)
+
+    // === sprites: pirate ship & BAN sign ===
+    const shipImg = new Image();
+    shipImg.src = "board.png"; // файл положите рядом с html
+    let shipReady = false;
+    shipImg.onload = () => { shipReady = true; };
+    const banImg = new Image();
+    banImg.src = "ban.png";
+    let banReady = false;
+    banImg.onload = () => { banReady = true; };
+    const taxImg = new Image();
+    taxImg.src = "tax.png";
+    let taxReady = false;
+    taxImg.onload = () => { taxReady = true; };
+    const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    function resizeCanvas(){
+      try{
+        const rect = gameWrap?.getBoundingClientRect();
+        const ratio = 880/420; // исходное соотношение
+        let w = Math.min((rect?.width||canvas.clientWidth) - 32, 1200);
+        let h = w / ratio;
+        if(h > window.innerHeight * 0.7){ h = window.innerHeight*0.7; w = h*ratio; }
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        const pixelW = Math.floor(w * DPR);
+        const pixelH = Math.floor(h * DPR);
+        canvas.width = pixelW; canvas.height = pixelH; ctx.setTransform(DPR,0,0,DPR,0,0);
+      }catch(e){ /* noop */ }
+    }
+    resizeCanvas(); addEventListener('resize', resizeCanvas);
+
+    const state = { running: true, over: false, score: 0, speed: 1, t: 0, sessionPoints: 0 };
+    const W = () => canvas.clientWidth;
+    const H = () => canvas.clientHeight;
+    const ship = {x: 60, y: H()/2, r: 28, vx: 0, vy: 0};
+    // Smoothed horizontal velocity for mouse steering (used for tilt)
+    let _lastPosX = ship.x;
+    let _tiltVX = 0;
+    // Ship trail (neon cyan→magenta)
+    const trail = []; // {x,y,at}
+    const TRAIL_LIFETIME = 0.45; // seconds of visible trail (shorter)
+    let trailAcc = 0; // sampling accumulator
+    let obstacles = [], chests = [];
+    // particles for chest pickup burst
+    let particles = [];
+    let lastSpawn = 0, lastChest = 0;
+
+    function rand(a,b){return a + Math.random()*(b-a)}
+    function box(x,y,w,h,col){ctx.fillStyle=col;ctx.fillRect(x,y,w,h)}
+    // function waveBG(t){ /* deprecated */ }
+
+    // function drawWaterBackground(ctx, t) { /* deprecated; canvas cleared each frame */ }
+
+    // (removed drawGifBackground helper)
+    function drawShip(){
+      ctx.save();
+      ctx.translate(ship.x, ship.y);
+      // Ship stays upright; small lean (no full rotation). Limit tilt to ±0.18 rad
+      const tilt = Math.max(-0.18, Math.min(0.18, ((ship.vx||0)*0.7 + _tiltVX*0.3) * 0.02));
+      ctx.rotate(tilt);
+      // mirror horizontally
+      ctx.scale(-1, 1);
+      if (shipReady) {
+        // приблизительные размеры, соотносящиеся с прежним отрисованным корабликом
+        let w = ship.r * 3.2;
+        let h = ship.r * 2.4;
+        w *= 1.2; h *= 1.2; // +20% размер
+        // gradient aura: cyan -> yellow (layered shadows)
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = 'rgba(0,230,255,0.6)';
+        ctx.drawImage(shipImg, -w/2, -h/2, w, h);
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = 'rgba(255,184,0,0.45)';
+        ctx.drawImage(shipImg, -w/2, -h/2, w, h);
+        ctx.restore();
+        // base sprite (no shadow) for crisp edges
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.drawImage(shipImg, -w/2, -h/2, w, h);
+      } else {
+        // fallback — прежняя векторная отрисовка
+      ctx.fillStyle = '#f5f5f5';
+      ctx.beginPath(); ctx.moveTo(22,0); ctx.lineTo(-16,10); ctx.lineTo(-16,-10); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#ffffff'; ctx.fillRect(-4,-14,12,10); ctx.fillRect(-4,4,10,8);
+      ctx.fillStyle='#9ca3af'; ctx.fillRect(-2,-16,2,32);
+      ctx.fillStyle='#dc2626'; ctx.fillRect(10,-10,12,6);
+      // glow + outline for vector fallback
+      ctx.globalAlpha = 1;
+      ctx.shadowColor = 'rgba(0,230,255,0.5)';
+      ctx.shadowBlur = 10;
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = '#00E6FF';
+      ctx.strokeRect(-24,-18,48,36);
+      }
+      ctx.restore();
+    }
+    function spawnObstacle(){
+      // Regular vertical obstacle (can appear closer to the bottom now)
+      const h = rand(20, 70);
+      const gapY = rand(24, Math.max(24, H()-24-h));
+      const w = rand(14,22);
+      obstacles.push({x: W()+20, y: gapY, w, h, vx: - (2 + state.speed*1.2)});
+      // Occasional paired obstacle
+      if(Math.random()<0.35){ const h2=rand(18,60); const y2 = Math.max(0, gapY - rand(50,120));
+        obstacles.push({x: W()+50, y:y2, w:rand(14,22), h:h2, vx: - (2.2 + state.speed*1.2)});
+      }
+      // Bottom "reef" segment to prevent camping at the floor
+      if(Math.random()<0.45){
+        obstacles.push({x: W()+30, y: H()-26, w: rand(50, 120), h: 24, vx: - (2 + state.speed*1.1)});
+      }
+    }
+    function spawnChest(){
+      chests.push({x: W()+20, y: rand(30,H()-30), r: 10, vx: -(1.8 + state.speed), phase: Math.random()*Math.PI*2});
+    }
+    function spawnBurst(x,y,baseR=10){
+      const n = 12;
+      for(let i=0;i<n;i++){
+        const ang = (i/n)*Math.PI*2 + Math.random()*0.5;
+        const sp = 60 + Math.random()*90;
+        particles.push({
+          x, y,
+          vx: Math.cos(ang)*sp,
+          vy: Math.sin(ang)*sp,
+          life: 0.5 + Math.random()*0.25,
+          r: 2 + Math.random()*2,
+          hue: Math.random()<0.5 ? 'rgba(0,230,255,' : 'rgba(255,43,214,',
+        });
+      }
+    }
+    function resetGame(){
+      state.over=false; state.running=true; state.score=0; state.speed=1; state.t=0; state.sessionPoints=0;
+      obstacles.length=0; chests.length=0; ship.x=60; ship.y=H()/2; ship.vx=0; ship.vy=0; lastSpawn=0; lastChest=0;
+      trail.length = 0; trailAcc = 0;
+      ui.pauseBtn.textContent='Пауза'; ui.score.textContent='0'; ui.speed.textContent='1.0x';
+      ui.pointsSession.textContent='0';
+    }
+    function gameOver(){
+      state.over=true; state.running=false;
+      if (state.score > store.best) { store.best = state.score; saveStore(); }
+      ui.best.textContent = store.best;
+      if (ui.hudBest) ui.hudBest.textContent = store.best;
+      ctx.fillStyle='rgba(0,0,0,.65)'; ctx.fillRect(0,0,W(),H());
+      ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.font='bold 24px "JetBrains Mono", monospace';
+      ctx.fillText('Корабль ушёл на дно! Очки: '+state.score, W()/2, H()/2 - 6);
+      ctx.font='14px "JetBrains Mono", monospace'; ctx.fillStyle='#d4d4d4';
+      ctx.fillText('Нажми Заново, чтобы попробовать ещё', W()/2, H()/2 + 16);
+    }
+    function collidesCircleRect(a,b){
+      const cx = Math.max(b.x, Math.min(a.x, b.x+b.w));
+      const cy = Math.max(b.y, Math.min(a.y, b.y+b.h));
+      const dx = a.x - cx, dy = a.y - cy;
+      return (dx*dx + dy*dy) < (a.r*a.r);
+    }
+
+    // Input — always capture arrows unless typing in inputs
+    const keys={};
+    function isOnEditable(){ const a=document.activeElement; return (a && (/input|textarea|select|button|a/i.test(a.tagName) || a.isContentEditable)); }
+    function gameHasFocus(){ return !isOnEditable(); }
+    addEventListener('keydown',e=>{
+      keys[e.key]=true;
+      if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','w','a','s','d','W','A','S','D'].includes(e.key) && gameHasFocus()) e.preventDefault();
+      if(e.key===' ') togglePause();
+    }, {passive:false});
+    addEventListener('keyup',e=>{ keys[e.key]=false; }, {passive:true});
+
+    // scroll prevention handled in script.js
+
+    // Mouse steering (move across whole play area)
+    let mouseActive=false, targetX=null, targetY=null;
+    function setTargetFromClient(cx, cy){ const r=canvas.getBoundingClientRect(); targetX=((cx-r.left)/r.width)*W(); targetY=((cy-r.top)/r.height)*H(); }
+    canvas.addEventListener('mousedown',e=>{mouseActive=true; setTargetFromClient(e.clientX,e.clientY)});
+    window.addEventListener('mouseup',()=>{mouseActive=false});
+    canvas.addEventListener('mouseleave',()=>{mouseActive=false});
+    canvas.addEventListener('mousemove',e=>{ if(!mouseActive) return; setTargetFromClient(e.clientX,e.clientY); });
+    function steerToTarget(dt){ if(targetX==null||targetY==null) return; const k=6; const f=Math.min(1,k*dt); ship.x += (targetX-ship.x)*f; ship.y += (targetY-ship.y)*f; }
+
+    // Mobile touch joystick (virtual stick)
+    const stickBase=document.getElementById('stickBase');
+    const stickHat=document.getElementById('stickHat');
+    let stickActive=false, stickCenter=null;
+    function stickSet(dx,dy){ stickHat.style.transform=`translate(${dx}px, ${dy}px)`; const max=36; const x=Math.max(-max,Math.min(max,dx)); const y=Math.max(-max,Math.min(max,dy)); ship.vx = x/max*2; ship.vy = y/max*2; }
+    stickBase?.addEventListener('touchstart',e=>{const t=e.touches[0]; stickActive=true; stickCenter={x:t.clientX,y:t.clientY};},{passive:false});
+    stickBase?.addEventListener('touchmove',e=>{ if(!stickActive) return; const t=e.touches[0]; const dx=t.clientX-stickCenter.x; const dy=t.clientY-stickCenter.y; stickSet(dx,dy); e.preventDefault(); },{passive:false});
+    stickBase?.addEventListener('touchend',()=>{stickActive=false; stickSet(0,0); ship.vx=0; ship.vy=0;});
+
+    function togglePause(){ if(state.over) return; state.running=!state.running; ui.pauseBtn.textContent = state.running?'Пауза':'Продолжить'; }
+    ui.pauseBtn.onclick = togglePause;
+    ui.restartBtn.onclick = resetGame;
+    // Fullscreen toggle
+    const btnFS = document.getElementById('btnFullscreen');
+    function enterFS(){ if(!document.fullscreenElement) gameWrap?.requestFullscreen?.(); }
+    function exitFS(){ if(document.fullscreenElement) document.exitFullscreen?.(); }
+    btnFS?.addEventListener('click', ()=> document.fullscreenElement ? exitFS() : enterFS());
+    document.addEventListener('fullscreenchange', ()=> resizeCanvas());
+
+    function update(dt){
+      state.t += dt;
+      // spawn
+      if(state.t - lastSpawn > Math.max(0.6, 1.3 - state.speed*0.12)){ spawnObstacle(); lastSpawn = state.t; }
+      if(state.t - lastChest > Math.max(0.8, 1.6 - state.speed*0.1)){ spawnChest(); lastChest = state.t; }
+      // move ship
+      const acc = 0.22;
+      if(keys['ArrowLeft']||keys['a']) ship.vx -= acc;
+      if(keys['ArrowRight']||keys['d']) ship.vx += acc;
+      if(keys['ArrowUp']||keys['w']) ship.vy -= acc*0.6;
+      if(keys['ArrowDown']||keys['s']) ship.vy += acc*0.6;
+      // friction
+      ship.vx *= 0.92; ship.vy *= 0.92;
+      ship.x += ship.vx; ship.y += ship.vy;
+      // clamp
+      ship.x = Math.max(20, Math.min(W()-20, ship.x));
+      ship.y = Math.max(20, Math.min(H()-20, ship.y));
+      // update smoothed mouse horizontal velocity for tilt
+      const instVx = (ship.x - _lastPosX) / Math.max(dt, 1e-4);
+      _tiltVX = _tiltVX * 0.85 + instVx * 0.15;
+      _lastPosX = ship.x;
+      // sample ship trail at ~30 Hz
+      trailAcc += dt;
+      if (trailAcc >= 1/30) {
+        // compute ship rear offset (opposite to facing). Our sprite is mirrored (scale -1,1), so tail is +X in local before mirror.
+        let w = ship.r * 3.2 * 1.2; // same width as in drawShip
+        const tailOffset = { x:  w*0.34, y: 0 }; // ~1/3 of sprite width behind the center
+        // approximate heading by velocity; fallback to last movement along x
+        const ang = Math.atan2(ship.vy, ship.vx);
+        const tx = ship.x - (Math.cos(ang)||1) * tailOffset.x;
+        const ty = ship.y - (Math.sin(ang)||0) * tailOffset.x + 18; // slight vertical drop (~0.5cm)
+        trail.push({ x: tx, y: ty, at: state.t });
+        trailAcc = 0;
+      }
+      // remove old trail points
+      while (trail.length && (state.t - trail[0].at) > TRAIL_LIFETIME) trail.shift();
+
+      // move obstacles & chests
+      obstacles.forEach(o=>{o.x += o.vx * (1+state.speed*0.1)});
+      chests.forEach(c=>{c.x += c.vx * (1+state.speed*0.08)});
+      // remove offscreen
+      obstacles = obstacles.filter(o=>o.x+o.w>-30);
+      chests = chests.filter(c=>c.x>-20);
+      // collisions
+      for(const o of obstacles){ if(collidesCircleRect({x:ship.x,y:ship.y,r:ship.r}, o)){ gameOver(); return; } }
+      for(const c of chests){
+        const cy = c.y + Math.sin(state.t*2.6 + (c.phase||0))*3;
+        const d=(ship.x-c.x)**2+(ship.y-cy)**2;
+        if(d < (ship.r+c.r)**2){
+          state.score+=25; state.speed+=0.03; spawnBurst(c.x, cy, c.r); c.x=-999;
+        }
+      }
+      // particles physics
+      particles.forEach(p=>{
+        p.life -= dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vy += 20*dt; // slight gravity
+      });
+      particles = particles.filter(p=>p.life>0);
+      // score over time
+      state.score += Math.floor(1 + state.speed*0.6);
+      state.speed = Math.min(6, 1 + state.t*0.03 + state.score/1500);
+      // throttle UI updates (score/speed) to ~12 FPS to avoid layout/compositing jitter
+      _uiUpdateAccumulator += dt;
+      if (_uiUpdateAccumulator >= 0.08){
+        const newScore = String(state.score);
+        if (ui.score && ui.score.textContent !== newScore) ui.score.textContent = newScore;
+        if (ui.hudScore && ui.hudScore.textContent !== newScore) ui.hudScore.textContent = newScore;
+        const newSpeed = (1.0 + (state.speed-1)).toFixed(1)+'x';
+        if (ui.speed && ui.speed.textContent !== newSpeed) ui.speed.textContent = newSpeed;
+        if (ui.hudSpeed && ui.hudSpeed.textContent !== newSpeed) ui.hudSpeed.textContent = newSpeed;
+        _uiUpdateAccumulator = 0;
+      }
+      // earning
+      state.sessionPoints = state.score;
+      const earnAdd = Math.floor(dt * (15 + state.speed*5));
+      store.totalPoints += earnAdd; // базовые очки за выживание (чтобы копилось стабильно)
+      ui.pointsSession.textContent = state.sessionPoints;
+      saveStore();
+      updateClaimable();
+      // Season progress UI handled in script.js
+    }
+
+    // Season progress is handled by the single module in script.js
+
+    function render(){
+      const tNow = performance.now()/1000;
+      ctx.clearRect(0, 0, W(), H());
+      // Optional: if shake needed, do only via context
+      // ctx.save();
+      // ctx.translate(shakeX||0, shakeY||0);
+      // background handled by layout
+      // chests (points) — neon gradient dots (cyan↔magenta) with gentle wobble
+      chests.forEach(c=>{
+        const r = c.r || 10;
+        const cy = c.y + Math.sin(state.t*2.6 + (c.phase||0))*3;
+        const ang = (state.t * 1.6 + (c.phase||0)) % (Math.PI*2);
+        const x0 = c.x + Math.cos(ang) * -r;
+        const y0 = cy + Math.sin(ang) * -r;
+        const x1 = c.x + Math.cos(ang) * r;
+        const y1 = cy + Math.sin(ang) * r;
+        const g = ctx.createLinearGradient(x0,y0,x1,y1);
+        g.addColorStop(0,'#00E6FF');
+        g.addColorStop(1,'#FF2BD6');
+        ctx.save();
+        ctx.shadowColor='rgba(0,230,255,0.55)';
+        ctx.shadowBlur=12;
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(c.x, cy, r*0.6, 0, Math.PI*2);
+        ctx.fill();
+        // thin white sparkle
+        ctx.shadowBlur=0;
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.beginPath();
+        ctx.arc(c.x - r*0.15, cy - r*0.15, r*0.18, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      // particles burst
+      if (particles.length){
+        ctx.save();
+        particles.forEach(p=>{
+          const a = Math.max(0, Math.min(1, p.life/0.5));
+          ctx.fillStyle = p.hue + (0.15 + 0.85*a) + ')';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r*(0.6+0.4*a), 0, Math.PI*2);
+          ctx.fill();
+        });
+        ctx.restore();
+      }
+      // obstacles: VERTICAL → BAN (ban.png), HORIZONTAL → TAX (tax.png), остальные — красные бары
+      obstacles.forEach(o=>{
+        const isVertical = (o.w <= 26 && o.h >= 40);
+        const isHorizontal = (o.h <= 26 && o.w >= 40);
+        if (isVertical && banReady){
+          ctx.save();
+          ctx.shadowColor = 'rgba(255,255,255,0.35)';
+          ctx.shadowBlur = 14;
+          // stretch PNG to the bar rectangle; widen horizontally by 2.5x
+          const w2 = o.w * 2.5;
+          const dx = o.x - Math.floor((w2 - o.w)/2);
+          ctx.drawImage(banImg, dx, o.y, w2, o.h);
+          ctx.restore();
+        } else if (isHorizontal && taxReady){
+          ctx.save();
+          ctx.shadowColor = 'rgba(255,255,255,0.35)';
+          ctx.shadowBlur = 14;
+          // stretch PNG to the bar rectangle (match diameter/length)
+          ctx.drawImage(taxImg, o.x, o.y, o.w, o.h);
+          ctx.restore();
+        } else {
+          // for any other obstacle shapes, paint with BAN texture as well
+          if (banReady){
+            ctx.save();
+            ctx.shadowColor = 'rgba(255,255,255,0.35)';
+            ctx.shadowBlur = 14;
+            const w2 = o.w * 2.5; // same enlargement as other ban bars
+            const dx = o.x - Math.floor((w2 - o.w)/2);
+            ctx.drawImage(banImg, dx, o.y, w2, o.h);
+            ctx.restore();
+          } else {
+            ctx.save();
+            ctx.shadowColor='rgba(255,96,0,0.5)';
+            ctx.shadowBlur=12;
+            box(o.x,o.y,o.w,o.h,'#dc2626');
+            ctx.restore();
+          }
+        }
+      });
+
+      // ship trail (fading neon stroke)
+      if (trail.length > 1) {
+        ctx.save();
+        ctx.lineCap = 'round';
+        for (let i = 1; i < trail.length; i++) {
+          const p0 = trail[i-1];
+          const p1 = trail[i];
+          const age = Math.min(1, Math.max(0, (state.t - p1.at)/TRAIL_LIFETIME));
+          const alpha = 1 - age;
+          const g = ctx.createLinearGradient(p0.x, p0.y, p1.x, p1.y);
+          g.addColorStop(0, 'rgba(0,230,255,1)');
+          g.addColorStop(1, 'rgba(255,43,214,1)');
+          ctx.strokeStyle = g;
+          ctx.globalAlpha = 0.42 * alpha;
+          ctx.shadowColor = 'rgba(0,230,255,0.42)';
+          ctx.shadowBlur = 8;
+          ctx.lineWidth = Math.max(6, 12 * alpha);
+          ctx.beginPath();
+          ctx.moveTo(p0.x, p0.y);
+          ctx.lineTo(p1.x, p1.y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      // ship always on top of trail
+      drawShip();
+      // watermark
+      ctx.globalAlpha=0.08; ctx.fillStyle='#fff'; ctx.font='bold 120px Georgia, serif'; ctx.fillText('CRSR', 20, H()-20); ctx.globalAlpha=1;
+      // ctx.restore && ctx.restore();
+    }
+
+    let last=performance.now();
+    function loop(t){
+      const dt = Math.min(0.05, (t-last)/1000); last=t;
+      if(state.running && !state.over){ update(dt); steerToTarget(dt); render(); }
+      else { render(); }
+      requestAnimationFrame(loop);
+    }
+    resetGame(); requestAnimationFrame(loop);
+  </script>
+  
+  <!-- UI logic for metrics/progress moved to script.js (loaded in <head> with defer) -->
+  <noscript><div class="card pad" style="margin:16px 0">Для полной работы сайта включите JavaScript.</div></noscript>
+</body>
+</html>
